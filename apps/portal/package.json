@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "typecheck": "tsc --noEmit",
-    "lint": "ng lint"
+    "lint": "eslint src --ext .ts,.html"
   },
   "private": true,
   "packageManager": "npm@10.9.7",
@@ -20,12 +20,16 @@
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
     "@ionic/angular": "^8.8.6",
-    "ionicons": "^8.0.13",
     "@personal-ai-os/shared": "*",
+    "ionicons": "^8.0.13",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "@angular-eslint/builder": "^17.5.3",
+    "@angular-eslint/eslint-plugin": "^17.5.3",
+    "@angular-eslint/eslint-plugin-template": "^17.5.3",
+    "@angular-eslint/template-parser": "^17.5.3",
     "@angular/build": "^21.2.10",
     "@angular/cli": "^21.2.10",
     "@angular/compiler-cli": "^21.2.0",

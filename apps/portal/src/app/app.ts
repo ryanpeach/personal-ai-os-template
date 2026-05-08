@@ -11,4 +11,4 @@ import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
     </ion-app>
   `,
 })
-export class App {}
+export class AppComponent {}
