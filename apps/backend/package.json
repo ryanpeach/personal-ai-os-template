@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec \"ts-node src/index.ts\"",
-    "migrate": "knex --knexfile knexfile.cjs migrate:latest",
+    "migrate": "node scripts/migrate.cjs",
     "migrate:make": "knex --knexfile knexfile.cjs migrate:make",
     "migrate:rollback": "knex --knexfile knexfile.cjs migrate:rollback",
     "build": "tsc",

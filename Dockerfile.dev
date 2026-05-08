@@ -13,4 +13,4 @@ COPY apps/portal/package.json ./apps/portal/
 
 RUN npm ci
 
-CMD ["npm", "run", "dev"]
+CMD ["sh", "-c", "npm run migrate --workspace=apps/backend && npm run dev"]

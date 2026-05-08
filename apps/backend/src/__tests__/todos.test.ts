@@ -1,6 +1,3 @@
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
 import request from 'supertest';
 import { openDatabase } from '../db';
 import { createApp } from '../app';
@@ -8,19 +5,20 @@ import type Database from 'better-sqlite3';
 import type { Todo } from '@personal-ai-os/shared';
 
 describe('Todos API', () => {
-  let tmpDir: string;
   let db: Database.Database;
   let app: ReturnType<typeof createApp>;
 
-  beforeEach(async () => {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-db-'));
-    db = await openDatabase(path.join(tmpDir, 'db.sqlite'));
+  beforeAll(() => {
+    db = openDatabase();
     app = createApp(db);
   });
 
-  afterEach(() => {
+  afterAll(() => {
     db.close();
-    fs.rmSync(tmpDir, { recursive: true });
+  });
+
+  afterEach(() => {
+    db.prepare('DELETE FROM todos').run();
   });
 
   describe('GET /api/todos', () => {
