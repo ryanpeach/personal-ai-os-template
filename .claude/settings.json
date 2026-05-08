@@ -8,7 +8,9 @@
       "Bash(rm *.sqlite*)",
       "Bash(rm *.backup*)",
       "Bash(unlink *sqlite*)",
-      "Bash(unlink *backup*)"
+      "Bash(unlink *backup*)",
+      "Bash(rmdir *backups*)",
+      "Bash(chattr *backups*)"
     ]
   }
 }
