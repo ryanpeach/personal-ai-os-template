@@ -22,14 +22,14 @@ One rule: `npm run migrate --workspace=apps/backend` runs before anything touche
 | Environment    | Who runs migrate   | When                                                                                    |
 | -------------- | ------------------ | --------------------------------------------------------------------------------------- |
 | Docker dev     | Dockerfile.dev CMD | Before `npm run dev`, inline: `npm run migrate --workspace=apps/backend && npm run dev` |
-| CI (tests)     | Jest `globalSetup` | Before test suite runs, via knex directly in `src/__tests__/setup.ts`                   |
+| CI (tests)     | Jest `globalSetup` | Before test suite runs, via knex directly in `jest-global-setup.js`                     |
 | Local (manual) | Developer          | `npm run migrate --workspace=apps/backend` per CLAUDE.md                                |
 
 ## Test Strategy
 
-Tests share a single migrated DB. Jest config sets `DATABASE_PATH` to `apps/backend/data/test.sqlite` and points `globalSetup` at `src/__tests__/setup.ts`.
+Tests share a single migrated DB. Jest config sets `DATABASE_PATH` to `apps/backend/data/test.sqlite` and points `globalSetup` at `jest-global-setup.js` (plain CJS, not TypeScript — `globalSetup` runs outside Jest's transform pipeline).
 
-`setup.ts` runs `knex.migrate.latest()` against the test DB path before any test file loads.
+`jest-global-setup.js` runs `knex.migrate.latest()` against the test DB path before any test file loads.
 
 Tests clean up via SQL in `afterEach`:
 
@@ -51,7 +51,7 @@ The main DB (`data/db.sqlite`) and all `.backup` files are physically unreachabl
 | `apps/backend/scripts/migrate.cjs`         | Backup + migrate wrapper (done)                   |
 | `apps/backend/package.json`                | `migrate` script uses wrapper (done)              |
 | `apps/backend/jest.config.js`              | Add `globalSetup`, set `DATABASE_PATH` env        |
-| `apps/backend/src/__tests__/setup.ts`      | New — runs knex migrations on test DB             |
+| `apps/backend/jest-global-setup.js`        | New — runs knex migrations on test DB             |
 | `apps/backend/src/__tests__/db.test.ts`    | Rewrite — no tmpdir, no CREATE TABLE, shared DB   |
 | `apps/backend/src/__tests__/todos.test.ts` | Remove tmpdir/CREATE TABLE, add afterEach cleanup |
 | `Dockerfile.dev`                           | CMD runs migrate before dev server                |
