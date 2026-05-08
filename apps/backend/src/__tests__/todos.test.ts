@@ -108,7 +108,7 @@ describe('Todos API', () => {
       const id = (created.body as Todo).id;
       await request(app).delete(`/api/todos/${id}`);
       const list = await request(app).get('/api/todos');
-      expect((list.body as Todo[]).find(t => t.id === id)).toBeUndefined();
+      expect((list.body as Todo[]).find((t) => t.id === id)).toBeUndefined();
     });
 
     it('returns 404 for a non-existent todo', async () => {

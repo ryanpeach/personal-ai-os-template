@@ -36,15 +36,15 @@ personal-ai-os/
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend framework | Angular 17+ (standalone components) |
-| UI components | Ionic 7 |
-| Styling | Tailwind CSS |
-| Backend | Express (Node.js) |
-| Database | SQLite via `better-sqlite3` |
-| Shared types | TypeScript package (`@personal-ai-os/shared`) |
-| Monorepo | npm workspaces |
+| Layer              | Technology                                    |
+| ------------------ | --------------------------------------------- |
+| Frontend framework | Angular 17+ (standalone components)           |
+| UI components      | Ionic 7                                       |
+| Styling            | Tailwind CSS                                  |
+| Backend            | Express (Node.js)                             |
+| Database           | SQLite via `better-sqlite3`                   |
+| Shared types       | TypeScript package (`@personal-ai-os/shared`) |
+| Monorepo           | npm workspaces                                |
 
 ---
 
@@ -126,12 +126,14 @@ Single `.prettierrc` at the repo root. Enforced on `.ts`, `.html`, `.json`, `.cs
 ### ESLint
 
 Root `.eslintrc.js` with TypeScript rules, extended per workspace:
+
 - `portal/` — adds Angular ESLint rules
 - `backend/` — standard TypeScript rules
 
 ### Pre-commit (Husky + lint-staged)
 
 Installed at the repo root. On every commit:
+
 1. Prettier format check on staged files
 2. ESLint on staged `.ts` files
 3. TypeScript typecheck (`tsc --noEmit`) on affected workspaces
@@ -147,6 +149,7 @@ Single workflow: `.github/workflows/ci.yml`
 Triggers: push and pull request on `main`.
 
 Steps (in order):
+
 1. Install dependencies (`npm ci`)
 2. Prettier check (`npx prettier --check .`)
 3. ESLint (`npm run lint --workspaces`)

@@ -73,6 +73,7 @@ personal-ai-os/
 ## Task 1: Root Monorepo Scaffold
 
 **Files:**
+
 - Create: `package.json`
 - Create: `tsconfig.base.json`
 - Create: `.prettierrc`
@@ -84,10 +85,7 @@ personal-ai-os/
 {
   "name": "personal-ai-os",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev": "concurrently -n portal,backend -c cyan,yellow \"npm run dev --workspace=apps/portal\" \"npm run dev --workspace=apps/backend\"",
     "build": "npm run build --workspace=packages/shared && npm run build --workspace=apps/backend && npm run build --workspace=apps/portal",
@@ -168,6 +166,7 @@ git commit -m "chore: root monorepo scaffold"
 ## Task 2: Shared Package
 
 **Files:**
+
 - Create: `packages/shared/package.json`
 - Create: `packages/shared/tsconfig.json`
 - Create: `packages/shared/src/index.ts`
@@ -257,6 +256,7 @@ git commit -m "feat: add shared TypeScript interfaces package"
 ## Task 3: Backend Scaffold
 
 **Files:**
+
 - Create: `apps/backend/package.json`
 - Create: `apps/backend/tsconfig.json`
 - Create: `apps/backend/jest.config.js`
@@ -372,6 +372,7 @@ git commit -m "chore: backend scaffold"
 ## Task 4: Backend Database Layer (TDD)
 
 **Files:**
+
 - Create: `apps/backend/src/db.ts`
 
 - [ ] **Step 1: Write the failing test**
@@ -468,6 +469,7 @@ git commit -m "feat(backend): SQLite database layer"
 ## Task 5: Backend App Factory + Todo Routes (TDD)
 
 **Files:**
+
 - Create: `apps/backend/src/routes/todos.ts`
 - Create: `apps/backend/src/app.ts`
 - Create: `apps/backend/src/__tests__/todos.test.ts`
@@ -587,7 +589,7 @@ describe('Todos API', () => {
       const id = (created.body as Todo).id;
       await request(app).delete(`/api/todos/${id}`);
       const list = await request(app).get('/api/todos');
-      expect((list.body as Todo[]).find(t => t.id === id)).toBeUndefined();
+      expect((list.body as Todo[]).find((t) => t.id === id)).toBeUndefined();
     });
 
     it('returns 404 for a non-existent todo', async () => {
@@ -645,9 +647,7 @@ export function createTodosRouter(db: Database.Database): Router {
     }
     const title = body.title.trim();
     const result = db.prepare('INSERT INTO todos (title) VALUES (?)').run(title);
-    const row = db
-      .prepare('SELECT * FROM todos WHERE id = ?')
-      .get(result.lastInsertRowid) as DbRow;
+    const row = db.prepare('SELECT * FROM todos WHERE id = ?').get(result.lastInsertRowid) as DbRow;
     res.status(201).json(toTodo(row));
   });
 
@@ -663,8 +663,7 @@ export function createTodosRouter(db: Database.Database): Router {
       typeof body.title === 'string' && body.title.trim() !== ''
         ? body.title.trim()
         : existing.title;
-    const newDone =
-      typeof body.done === 'boolean' ? (body.done ? 1 : 0) : existing.done;
+    const newDone = typeof body.done === 'boolean' ? (body.done ? 1 : 0) : existing.done;
     db.prepare('UPDATE todos SET title = ?, done = ? WHERE id = ?').run(newTitle, newDone, id);
     const updated = db.prepare('SELECT * FROM todos WHERE id = ?').get(id) as DbRow;
     res.json(toTodo(updated));
@@ -719,6 +718,7 @@ git commit -m "feat(backend): Express app + Todo CRUD routes with tests"
 ## Task 6: Backend Entry Point
 
 **Files:**
+
 - Create: `apps/backend/src/index.ts`
 
 - [ ] **Step 1: Write `apps/backend/src/index.ts`**
@@ -763,6 +763,7 @@ npm run dev --workspace=apps/backend
 ```
 
 In a second terminal:
+
 ```bash
 curl http://localhost:3000/api/todos
 ```
@@ -783,6 +784,7 @@ git commit -m "feat(backend): entry point with static file serving"
 ## Task 7: Portal Scaffold
 
 **Files:**
+
 - Create: `apps/portal/` (via ng new)
 - Modify: `apps/portal/tsconfig.json`
 - Create: `apps/portal/proxy.conf.json`
@@ -799,12 +801,14 @@ cd ..
 - [ ] **Step 2: Install Ionic and Tailwind into portal**
 
 Edit `apps/portal/package.json` to add these to `dependencies`:
+
 ```json
 "@ionic/angular": "^7.8.6",
 "ionicons": "^7.4.0"
 ```
 
 And to `devDependencies`:
+
 ```json
 "autoprefixer": "^10.4.19",
 "postcss": "^8.4.38",
@@ -814,6 +818,7 @@ And to `devDependencies`:
 - [ ] **Step 3: Add shared package dependency**
 
 In `apps/portal/package.json`, add to `dependencies`:
+
 ```json
 "@personal-ai-os/shared": "*"
 ```
@@ -859,6 +864,7 @@ Replace the generated `apps/portal/tsconfig.json` entirely:
 - [ ] **Step 6: Update `apps/portal/tsconfig.app.json`**
 
 Replace with:
+
 ```json
 {
   "extends": "./tsconfig.json",
@@ -874,6 +880,7 @@ Replace with:
 - [ ] **Step 7: Update `apps/portal/tsconfig.spec.json`**
 
 Replace with:
+
 ```json
 {
   "extends": "./tsconfig.json",
@@ -960,6 +967,7 @@ In `angular.json`, make these three changes:
 - [ ] **Step 12: Add portal scripts**
 
 In `apps/portal/package.json`, ensure scripts include:
+
 ```json
 "scripts": {
   "dev": "ng serve",
@@ -982,6 +990,7 @@ git commit -m "chore(portal): Angular + Ionic + Tailwind scaffold"
 ## Task 8: Portal App Shell
 
 **Files:**
+
 - Modify: `apps/portal/src/app/app.config.ts`
 - Modify: `apps/portal/src/app/app.component.ts`
 - Create: `apps/portal/src/app/app.routes.ts`
@@ -999,13 +1008,11 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    loadComponent: () =>
-      import('./home/home.component').then((m) => m.HomeComponent),
+    loadComponent: () => import('./home/home.component').then((m) => m.HomeComponent),
   },
   {
     path: 'apps/todo',
-    loadComponent: () =>
-      import('./apps/todo/todo.component').then((m) => m.TodoComponent),
+    loadComponent: () => import('./apps/todo/todo.component').then((m) => m.TodoComponent),
   },
   {
     path: '**',
@@ -1024,11 +1031,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideRouter(routes),
-    provideIonicAngular({}),
-    provideHttpClient(),
-  ],
+  providers: [provideRouter(routes), provideIonicAngular({}), provideHttpClient()],
 };
 ```
 
@@ -1071,6 +1074,7 @@ git commit -m "feat(portal): app shell with Ionic + router config"
 ## Task 9: Portal Home Component
 
 **Files:**
+
 - Create: `apps/portal/src/app/home/home.component.ts`
 
 - [ ] **Step 1: Create directory**
@@ -1111,7 +1115,10 @@ interface SubApp {
       <h1 class="text-2xl font-bold text-center mb-6">Personal AI OS</h1>
       <div class="grid grid-cols-2 gap-4">
         @for (app of apps; track app.route) {
-          <ion-card [routerLink]="app.route" class="cursor-pointer m-0 hover:opacity-80 transition-opacity">
+          <ion-card
+            [routerLink]="app.route"
+            class="cursor-pointer m-0 hover:opacity-80 transition-opacity"
+          >
             <ion-card-header class="flex flex-col items-center pt-4">
               <ion-icon [name]="app.icon" class="text-5xl text-blue-500 mb-1"></ion-icon>
               <ion-card-title class="text-base text-center">{{ app.name }}</ion-card-title>
@@ -1161,6 +1168,7 @@ git commit -m "feat(portal): home component with sub-app card grid"
 ## Task 10: Portal Todo Service (TDD)
 
 **Files:**
+
 - Create: `apps/portal/src/app/apps/todo/todo.service.ts`
 - Create: `apps/portal/src/app/apps/todo/todo.service.spec.ts`
 
@@ -1299,6 +1307,7 @@ git commit -m "feat(portal): TodoService with HTTP calls and signal state"
 ## Task 11: Portal Todo Component
 
 **Files:**
+
 - Create: `apps/portal/src/app/apps/todo/todo.component.ts`
 
 - [ ] **Step 1: Write `apps/portal/src/app/apps/todo/todo.component.ts`**
@@ -1444,6 +1453,7 @@ git commit -m "feat(portal): Todo sub-app component"
 ## Task 12: ESLint Configuration
 
 **Files:**
+
 - Create: `.eslintrc.js` (root)
 - Create: `apps/backend/.eslintrc.js`
 - Add portal ESLint via `ng add`
@@ -1451,6 +1461,7 @@ git commit -m "feat(portal): Todo sub-app component"
 - [ ] **Step 1: Install root ESLint devDependencies**
 
 Add to root `package.json` `devDependencies`:
+
 ```json
 "@typescript-eslint/eslint-plugin": "^7.13.0",
 "@typescript-eslint/parser": "^7.13.0",
@@ -1458,6 +1469,7 @@ Add to root `package.json` `devDependencies`:
 ```
 
 Then:
+
 ```bash
 npm install
 ```
@@ -1521,6 +1533,7 @@ git commit -m "chore: ESLint for root, backend, and portal"
 ## Task 13: Husky + lint-staged Pre-commit
 
 **Files:**
+
 - Create: `.husky/pre-commit`
 - Create: `.lintstagedrc.json`
 
@@ -1578,6 +1591,7 @@ git commit -m "chore: Husky + lint-staged pre-commit hook"
 ## Task 14: GitHub Actions CI
 
 **Files:**
+
 - Create: `.github/workflows/ci.yml`
 
 - [ ] **Step 1: Create directory**

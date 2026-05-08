@@ -12,10 +12,7 @@ describe('TodoService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(TodoService);
     httpMock = TestBed.inject(HttpTestingController);

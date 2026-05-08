@@ -27,7 +27,10 @@ interface SubApp {
       <h1 class="text-2xl font-bold text-center mb-6">Personal AI OS</h1>
       <div class="grid grid-cols-2 gap-4">
         @for (app of apps; track app.route) {
-          <ion-card [routerLink]="app.route" class="cursor-pointer m-0 hover:opacity-80 transition-opacity">
+          <ion-card
+            [routerLink]="app.route"
+            class="cursor-pointer m-0 hover:opacity-80 transition-opacity"
+          >
             <ion-card-header class="flex flex-col items-center pt-4">
               <ion-icon [name]="app.icon" class="text-5xl text-blue-500 mb-1"></ion-icon>
               <ion-card-title class="text-base text-center">{{ app.name }}</ion-card-title>

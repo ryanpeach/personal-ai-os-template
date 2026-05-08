@@ -34,9 +34,7 @@ export function createTodosRouter(db: Database.Database): Router {
     }
     const title = body.title.trim();
     const result = db.prepare('INSERT INTO todos (title) VALUES (?)').run(title);
-    const row = db
-      .prepare('SELECT * FROM todos WHERE id = ?')
-      .get(result.lastInsertRowid) as DbRow;
+    const row = db.prepare('SELECT * FROM todos WHERE id = ?').get(result.lastInsertRowid) as DbRow;
     res.status(201).json(toTodo(row));
   });
 
@@ -52,8 +50,7 @@ export function createTodosRouter(db: Database.Database): Router {
       typeof body.title === 'string' && body.title.trim() !== ''
         ? body.title.trim()
         : existing.title;
-    const newDone =
-      typeof body.done === 'boolean' ? (body.done ? 1 : 0) : existing.done;
+    const newDone = typeof body.done === 'boolean' ? (body.done ? 1 : 0) : existing.done;
     db.prepare('UPDATE todos SET title = ?, done = ? WHERE id = ?').run(newTitle, newDone, id);
     const updated = db.prepare('SELECT * FROM todos WHERE id = ?').get(id) as DbRow;
     res.json(toTodo(updated));
