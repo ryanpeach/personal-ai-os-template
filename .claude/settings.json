@@ -1,0 +1,14 @@
+{
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true
+  },
+  "permissions": {
+    "deny": [
+      "Bash(rm *apps/backend/data*)",
+      "Bash(rm *.sqlite*)",
+      "Bash(rm *.backup*)",
+      "Bash(unlink *sqlite*)",
+      "Bash(unlink *backup*)"
+    ]
+  }
+}

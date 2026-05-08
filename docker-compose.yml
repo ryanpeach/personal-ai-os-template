@@ -1,0 +1,18 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - ./apps/backend/data:/app/apps/backend/data
+    ports:
+      - '3000:3000'
+      - '4200:4200'
+    environment:
+      - DATABASE_PATH=/app/apps/backend/data/db.sqlite
+      - PORT=3000
+
+volumes:
+  node_modules:

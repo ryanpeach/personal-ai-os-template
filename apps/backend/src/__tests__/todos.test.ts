@@ -8,13 +8,17 @@ describe('Todos API', () => {
   let db: Database.Database;
   let app: ReturnType<typeof createApp>;
 
-  beforeEach(() => {
-    db = openDatabase(':memory:');
+  beforeAll(() => {
+    db = openDatabase();
     app = createApp(db);
   });
 
-  afterEach(() => {
+  afterAll(() => {
     db.close();
+  });
+
+  afterEach(() => {
+    db.prepare('DELETE FROM todos').run();
   });
 
   describe('GET /api/todos', () => {
