@@ -8,14 +8,7 @@
 
 ## CI — Wait, Check, Fix
 
-After every `git push` to a PR branch:
-
-1. **Wait** for CI to finish: `gh run watch $(gh run list --limit 1 --json databaseId --jq '.[0].databaseId')`.
-2. **Check** the result: `gh pr checks <pr-number>`.
-3. If any check fails, **read the logs** (`gh run view <run-id> --log-failed`) and fix the root cause.
-4. Commit the fix and repeat from step 1 until all checks pass.
-
-Never declare work done while CI is red.
+After every `git push` to a PR branch, run `/fix-ci` (`.claude/commands/fix-ci.md`) and follow it until all checks pass. Never declare work done while CI is red.
 
 ## Local Node Version
 
