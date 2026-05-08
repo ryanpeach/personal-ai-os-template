@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec \"ts-node src/index.ts\"",
-    "migrate": "ts-node src/migrate.ts",
+    "migrate": "knex --knexfile knexfile.cjs migrate:latest",
+    "migrate:make": "knex --knexfile knexfile.cjs migrate:make",
+    "migrate:rollback": "knex --knexfile knexfile.cjs migrate:rollback",
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "jest",
@@ -13,8 +15,9 @@
   },
   "dependencies": {
     "@personal-ai-os/shared": "*",
-    "better-sqlite3": "^9.6.0",
-    "express": "^4.19.2"
+    "better-sqlite3": "^12.9.0",
+    "express": "^4.19.2",
+    "knex": "^3.1.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.10",

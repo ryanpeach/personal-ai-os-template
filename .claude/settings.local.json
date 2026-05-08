@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /home/ryanpeach/Documents/Workspace/personal-ai-os add docs/superpowers/plans/2026-05-07-monorepo-portal.md)",
+      "Bash(git -C /home/ryanpeach/Documents/Workspace/personal-ai-os commit -m 'chore: add monorepo portal implementation plan *)",
+      "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
+      "Bash(npm run *)",
+      "Bash(npm install *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(npm test *)",
+      "Bash(git -C /home/ryanpeach/Documents/Workspace/personal-ai-os add apps/backend/src/db.ts apps/backend/src/__tests__/db.test.ts)",
+      "Bash(git -C /home/ryanpeach/Documents/Workspace/personal-ai-os commit -m ' *)",
+      "Bash(git -C /home/ryanpeach/Documents/Workspace/personal-ai-os commit -m 'feat\\(backend\\): SQLite database layer *)",
+      "Bash(git -C /home/ryanpeach/Documents/Workspace/personal-ai-os add apps/backend/src/)",
+      "mcp__plugin_context-mode_context-mode__ctx_execute",
+      "Bash(npx @angular/cli@latest new portal --routing --style=css --skip-git --skip-install)",
+      "Bash(npm --version)",
+      "Bash(gh run *)",
+      "Bash(grep -v \"^$\")"
+    ]
+  }
+}
