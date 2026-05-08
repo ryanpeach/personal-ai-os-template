@@ -26,3 +26,20 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# compiled output
+dist/
+out-tsc/
+
+# dependencies
+node_modules/
+
+# SQLite data
+apps/backend/data/
+
+# Angular cache
+.angular/
+
+# env
+.env
+.env.local
