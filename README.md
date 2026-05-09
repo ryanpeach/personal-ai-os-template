@@ -6,8 +6,8 @@ A locally hosted web app monorepo edited by Claude Code and served to a phone ov
 
 ```
 ├── apps/
-│   ├── backend/     # Express + TypeScript API (port 3000)
-│   └── portal/      # Angular + Ionic frontend (port 4200)
+│   ├── backend/     # Express + TypeScript API (port 3030)
+│   └── portal/      # Angular + Ionic frontend (port 4230)
 ├── packages/
 │   └── shared/      # Shared TypeScript types
 ├── docs/            # Design specs and implementation plans
@@ -35,8 +35,8 @@ sudo tailscale up
 This assigns a stable MagicDNS hostname (e.g. `my-machine.tail1234.ts.net`).
 Your phone reaches the app at:
 
-- `http://<hostname>:4200` — portal
-- `http://<hostname>:3000` — API
+- `http://<hostname>:4230` — portal
+- `http://<hostname>:3030` — API
 
 Add your phone to the same Tailscale account so it appears on the network.
 
