@@ -2,10 +2,8 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     volumes:
-      - .:/app
-      - node_modules:/app/node_modules
       - ./apps/backend/data:/app/apps/backend/data
     ports:
       - '3030:3000'
@@ -15,6 +13,15 @@ services:
       - PORT=3000
     develop:
       watch:
+        - path: apps/backend/src
+          action: sync
+          target: /app/apps/backend/src
+        - path: apps/portal/src
+          action: sync
+          target: /app/apps/portal/src
+        - path: packages/shared/src
+          action: sync+restart
+          target: /app/packages/shared/src
         - path: package.json
           action: rebuild
         - path: package-lock.json
@@ -25,6 +32,3 @@ services:
           action: rebuild
         - path: packages/shared/package.json
           action: rebuild
-
-volumes:
-  node_modules:
