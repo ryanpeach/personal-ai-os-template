@@ -109,17 +109,17 @@ with no transparency, no rounding.
 #!/usr/bin/env sh
 # Regenerate the PWA icon PNGs from icon.svg.
 # Run after editing apps/portal/public/icons/icon.svg.
-# Requires ImageMagick 7 (`magick` on PATH).
+# Requires ImageMagick (`convert` on PATH; works with IM6 or IM7).
 set -eu
 cd "$(dirname "$0")/.."
 SRC="public/icons/icon.svg"
-if ! command -v magick >/dev/null; then
-  echo "error: 'magick' (ImageMagick 7) is required to regenerate icons" >&2
+if ! command -v convert >/dev/null; then
+  echo "error: ImageMagick ('convert') is required to regenerate icons" >&2
   echo "  install with: sudo apt install imagemagick" >&2
   exit 1
 fi
 for size in 180 192 512; do
-  magick -background none -density 384 "$SRC" -resize "${size}x${size}" "public/icons/icon-${size}.png"
+  convert -background none -density 384 "$SRC" -resize "${size}x${size}" "public/icons/icon-${size}.png"
 done
 echo "wrote public/icons/icon-{180,192,512}.png"
 ```
