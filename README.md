@@ -40,16 +40,6 @@ Your phone reaches the app at:
 
 Add your phone to the same Tailscale account so it appears on the network.
 
-### Allow your Tailscale hostname in Angular
-
-Angular's dev server blocks requests from unknown hosts. Create a gitignored file with your MagicDNS hostname so the portal accepts connections from your phone:
-
-```bash
-echo "my-machine.tail1234.ts.net" > apps/portal/.ng-hosts
-```
-
-Replace `my-machine.tail1234.ts.net` with your actual hostname from `tailscale status`. This file is gitignored and never committed.
-
 ### Daily Use
 
 ```bash
