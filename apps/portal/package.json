@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "dev": "sh -c 'HOSTS=$(cat .ng-hosts 2>/dev/null); ng serve ${HOSTS:+--allowed-hosts $HOSTS}'",
+    "dev": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
