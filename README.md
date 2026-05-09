@@ -33,12 +33,32 @@ sudo tailscale up
 ```
 
 This assigns a stable MagicDNS hostname (e.g. `my-machine.tail1234.ts.net`).
-Your phone reaches the app at:
-
-- `http://<hostname>:4230` — portal
-- `http://<hostname>:3030` — API
-
 Add your phone to the same Tailscale account so it appears on the network.
+
+### Enable HTTPS for the portal
+
+Mobile browsers degrade or block features on plain HTTP (clipboard, service
+workers, secure cookies, install prompts). The portal is therefore served over
+HTTPS via [`tailscale serve`](https://tailscale.com/kb/1242/tailscale-serve).
+
+1. **Enable HTTPS Certificates** in the Tailscale admin console:
+   <https://login.tailscale.com/admin/dns> → "HTTPS Certificates" → Enable.
+2. Run the wrapper script once:
+
+   ```bash
+   ./scripts/tailscale-serve-portal.sh
+   ```
+
+   `--bg` persists the serve config across reboots; `tailscaled` restores it.
+   First request from the phone may take ~10s while the cert provisions.
+
+The phone reaches the app at:
+
+- `https://<hostname>.<tailnet>.ts.net` — portal (TLS terminated by Tailscale on port 443)
+- `https://<hostname>.<tailnet>.ts.net/api/...` — API (proxied by the portal's dev server to the backend)
+
+The backend is also reachable directly over HTTP at `http://<hostname>:3030`
+on the tailnet for debugging, but the phone always uses the HTTPS portal.
 
 ### Daily Use
 
@@ -46,6 +66,7 @@ Add your phone to the same Tailscale account so it appears on the network.
 sudo tailscale up    # connect
 sudo tailscale down  # disconnect
 tailscale status     # check hostname and peers
+tailscale serve status   # check HTTPS mapping
 ```
 
 ## Running the App
