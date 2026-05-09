@@ -8,8 +8,8 @@ services:
       - node_modules:/app/node_modules
       - ./apps/backend/data:/app/apps/backend/data
     ports:
-      - '3000:3000'
-      - '4200:4200'
+      - '3030:3000'
+      - '4230:4200'
     environment:
       - DATABASE_PATH=/app/apps/backend/data/db.sqlite
       - PORT=3000
