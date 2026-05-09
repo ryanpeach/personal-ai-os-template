@@ -13,6 +13,18 @@ services:
     environment:
       - DATABASE_PATH=/app/apps/backend/data/db.sqlite
       - PORT=3000
+    develop:
+      watch:
+        - path: package.json
+          action: rebuild
+        - path: package-lock.json
+          action: rebuild
+        - path: apps/backend/package.json
+          action: rebuild
+        - path: apps/portal/package.json
+          action: rebuild
+        - path: packages/shared/package.json
+          action: rebuild
 
 volumes:
   node_modules:
