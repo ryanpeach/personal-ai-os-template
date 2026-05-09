@@ -70,7 +70,7 @@
           "options": {
             "proxyConfig": "proxy.conf.json",
             "host": "0.0.0.0",
-            "allowedHosts": ["all"]
+            "allowedHosts": true
           },
           "configurations": {
             "production": {
