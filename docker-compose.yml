@@ -19,6 +19,9 @@ services:
         - path: apps/portal/src
           action: sync
           target: /app/apps/portal/src
+        - path: apps/portal/public
+          action: sync
+          target: /app/apps/portal/public
         - path: apps/portal/angular.json
           action: sync+restart
           target: /app/apps/portal/angular.json
