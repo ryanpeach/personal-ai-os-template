@@ -11,6 +11,7 @@ if ! command -v convert >/dev/null; then
   exit 1
 fi
 for size in 180 192 512; do
-  convert -background none -density 384 "$SRC" -resize "${size}x${size}" "public/icons/icon-${size}.png"
+  convert -background "#3880ff" -density 384 "$SRC" -resize "${size}x${size}" \
+    -alpha remove -alpha off "public/icons/icon-${size}.png"
 done
 echo "wrote public/icons/icon-{180,192,512}.png"
