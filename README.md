@@ -60,6 +60,19 @@ The phone reaches the app at:
 The backend is also reachable directly over HTTP at `http://<hostname>:3030`
 on the tailnet for debugging, but the phone always uses the HTTPS portal.
 
+### Install on iPhone
+
+The portal is installable as a standalone home-screen app (no Safari URL bar
+or toolbar):
+
+1. Open `https://<hostname>.<tailnet>.ts.net` in Safari on the iPhone.
+2. Tap **Share** → **Add to Home Screen** → **Add**.
+3. Tap the new "Portal" icon. It opens standalone — no URL bar, no toolbar.
+
+If you previously added an HTTP version of the portal to the home screen,
+delete that icon first — iOS does not refresh saved bookmarks when the
+underlying metadata changes.
+
 ### Daily Use
 
 ```bash
