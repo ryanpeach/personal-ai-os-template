@@ -8,8 +8,12 @@ out-tsc/
 # Dependencies
 node_modules/
 
-# SQLite data
+# Legacy SQLite data (preserved on disk if it exists, never deleted)
 apps/backend/data/
+
+# Supabase CLI local state
+supabase/.branches/
+supabase/.temp/
 
 # Angular cache
 .angular/

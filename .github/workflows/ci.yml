@@ -35,14 +35,8 @@ jobs:
       - name: Build shared
         run: npm run build --workspace=packages/shared
 
-      - name: Build backend
-        run: npm run build --workspace=apps/backend
-
       - name: Build portal
         run: npm run build --workspace=apps/portal
-
-      - name: Test backend
-        run: npm test --workspace=apps/backend
 
       - name: Test portal
         run: npm test --workspace=apps/portal

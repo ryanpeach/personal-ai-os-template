@@ -98,21 +98,23 @@ export class TodoComponent {
 
   constructor() {
     addIcons({ trashOutline, addOutline, arrowBackOutline });
-    this.todoService.loadAll();
+    void this.todoService.loadAll().catch((err) => console.error('loadAll failed', err));
   }
 
   add(): void {
     const title = this.newTitle.trim();
     if (!title) return;
-    this.todoService.create(title);
+    void this.todoService.create(title).catch((err) => console.error('create failed', err));
     this.newTitle = '';
   }
 
   toggle(todo: Todo): void {
-    this.todoService.update(todo.id, { done: !todo.done });
+    void this.todoService
+      .update(todo.id, { done: !todo.done })
+      .catch((err) => console.error('update failed', err));
   }
 
   remove(id: number): void {
-    this.todoService.remove(id);
+    void this.todoService.remove(id).catch((err) => console.error('remove failed', err));
   }
 }

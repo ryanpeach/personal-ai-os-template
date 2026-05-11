@@ -1,31 +1,66 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import type { PostgrestError } from '@supabase/supabase-js';
 import type { Todo } from '@personal-ai-os/shared';
+import { SUPABASE_CLIENT } from '../../supabase.client';
+
+interface TodoRow {
+  id: number;
+  title: string;
+  done: boolean;
+  created_at: string;
+}
+
+function rowToTodo(row: TodoRow): Todo {
+  return { id: row.id, title: row.title, done: row.done, createdAt: row.created_at };
+}
+
+function throwIf(error: PostgrestError | null): void {
+  if (error) throw error;
+}
 
 @Injectable({ providedIn: 'root' })
 export class TodoService {
-  private readonly http = inject(HttpClient);
+  private readonly supabase = inject(SUPABASE_CLIENT);
   readonly todos = signal<Todo[]>([]);
 
-  loadAll(): void {
-    this.http.get<Todo[]>('/api/todos').subscribe((todos) => this.todos.set(todos));
+  async loadAll(): Promise<void> {
+    const { data, error } = await this.supabase
+      .from('todos')
+      .select('id, title, done, created_at')
+      .order('id', { ascending: true });
+    throwIf(error);
+    this.todos.set((data ?? []).map(rowToTodo));
   }
 
-  create(title: string): void {
-    this.http.post<Todo>('/api/todos', { title }).subscribe((todo) => {
-      this.todos.update((list) => [...list, todo]);
-    });
+  async create(title: string): Promise<void> {
+    const trimmed = title.trim();
+    if (!trimmed) return;
+    const { data, error } = await this.supabase
+      .from('todos')
+      .insert({ title: trimmed })
+      .select('id, title, done, created_at')
+      .single();
+    throwIf(error);
+    if (data) this.todos.update((list) => [...list, rowToTodo(data)]);
   }
 
-  update(id: number, patch: { title?: string; done?: boolean }): void {
-    this.http.patch<Todo>(`/api/todos/${id}`, patch).subscribe((updated) => {
+  async update(id: number, patch: { title?: string; done?: boolean }): Promise<void> {
+    const { data, error } = await this.supabase
+      .from('todos')
+      .update(patch)
+      .eq('id', id)
+      .select('id, title, done, created_at')
+      .single();
+    throwIf(error);
+    if (data) {
+      const updated = rowToTodo(data);
       this.todos.update((list) => list.map((t) => (t.id === id ? updated : t)));
-    });
+    }
   }
 
-  remove(id: number): void {
-    this.http.delete(`/api/todos/${id}`).subscribe(() => {
-      this.todos.update((list) => list.filter((t) => t.id !== id));
-    });
+  async remove(id: number): Promise<void> {
+    const { error } = await this.supabase.from('todos').delete().eq('id', id);
+    throwIf(error);
+    this.todos.update((list) => list.filter((t) => t.id !== id));
   }
 }

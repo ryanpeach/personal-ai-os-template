@@ -3,19 +3,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - ./apps/backend/data:/app/apps/backend/data
     ports:
-      - '3030:3000'
       - '4230:4200'
-    environment:
-      - DATABASE_PATH=/app/apps/backend/data/db.sqlite
-      - PORT=3000
+    # The Supabase local stack runs on the host (via `supabase start`), not in this
+    # container. host.docker.internal resolves to the Docker host on macOS/Windows;
+    # on Linux it's mapped via host-gateway below.
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
     develop:
       watch:
-        - path: apps/backend/src
-          action: sync
-          target: /app/apps/backend/src
         - path: apps/portal/src
           action: sync
           target: /app/apps/portal/src
@@ -31,8 +27,6 @@ services:
         - path: package.json
           action: rebuild
         - path: package-lock.json
-          action: rebuild
-        - path: apps/backend/package.json
           action: rebuild
         - path: apps/portal/package.json
           action: rebuild

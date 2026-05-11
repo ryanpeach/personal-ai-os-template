@@ -2,10 +2,10 @@
 
 A locally hosted web app monorepo edited by Claude Code and served to a phone over Tailscale VPN.
 
-Create any apps for any phone using Claude Code, Ionic, SQLlite. Escape subscription hell and own your data!
+Create any apps for any phone using Claude Code, Ionic, and a locally hosted Supabase stack (Postgres + PostgREST + Auth + Studio). Escape subscription hell and own your data!
 
-You can even vibe code this app live from your phone using claude code remote control, and since all your data is in 
-sqllite, the AI can also access all the data in all your apps making all your apps automatically AI enabled.
+You can even vibe code this app live from your phone using claude code remote control, and since all your data is in
+local Postgres, the AI can also access all the data in all your apps making all your apps automatically AI enabled.
 
 Since it's locally hosted, feel free to set up local models for internal genui and ai applications. Control your data.
 
@@ -13,19 +13,24 @@ Since it's locally hosted, feel free to set up local models for internal genui a
 
 ```
 ├── apps/
-│   ├── backend/     # Express + TypeScript API (port 3030)
-│   └── portal/      # Angular + Ionic frontend (port 4230)
+│   └── portal/      # Angular + Ionic frontend (port 4230). Talks to Supabase directly via @supabase/supabase-js.
 ├── packages/
 │   └── shared/      # Shared TypeScript types
+├── supabase/        # Local Supabase stack config + Postgres migrations
 ├── docs/            # Design specs and implementation plans
 ├── docker-compose.yml
-└── Dockerfile.dev
+└── Dockerfile
 ```
+
+The backend is a **locally hosted Supabase stack** (Postgres + PostgREST + Auth + Studio) started by the
+[Supabase CLI](https://supabase.com/docs/guides/cli/getting-started). The portal calls PostgREST directly —
+there is no custom Express/Node API layer.
 
 ## Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) with Compose v2.22+
 - [Tailscale](https://tailscale.com/download)
+- [Supabase CLI](https://supabase.com/docs/guides/cli/getting-started) (`brew install supabase/tap/supabase`)
 - Node 24 (for local development outside Docker)
 
 ## Tailscale Setup
@@ -91,54 +96,67 @@ tailscale serve status   # check HTTPS mapping
 
 ## Running the App
 
-### With file watching (recommended)
+The app is split in two: the **Supabase local stack** (Postgres + PostgREST + Auth + Studio), managed by the
+Supabase CLI, and the **portal** (Angular dev server), run either directly with `npm` or in Docker.
+
+### 1. Start Supabase
+
+From the repo root:
+
+```bash
+npm run supabase:start
+```
+
+The first run pulls the Supabase Docker images (a few minutes); subsequent runs are fast. The CLI prints a
+table of URLs and keys when it's up. Default endpoints:
+
+- API (PostgREST): `http://127.0.0.1:54321`
+- Studio (admin UI): `http://127.0.0.1:54323`
+- Postgres: `postgresql://postgres:postgres@127.0.0.1:54322/postgres`
+
+Migrations under `supabase/migrations/` are applied automatically when the stack initialises.
+
+Useful follow-ups:
+
+```bash
+npm run supabase:reset   # destroy + recreate the local DB, re-run migrations
+npm run supabase:stop    # stop the local stack (data persists in Docker volumes)
+```
+
+### 2. Start the portal
+
+```bash
+npm run dev              # ng serve on http://127.0.0.1:4230
+```
+
+Or run it in Docker with file watching:
 
 ```bash
 docker compose watch
 ```
 
-This starts the app and watches for changes:
-
-- **Source files** (`apps/`, `packages/`) — synced instantly via bind mount; nodemon and `ng serve` hot-reload inside the container with no restart
-- **Package manifests** (`package.json`, `package-lock.json`) — triggers a full image rebuild and container restart so `npm ci` re-runs
-
-### One-shot start (no watching)
-
-```bash
-docker compose up
-```
+This rebuilds the container image when manifest files change and syncs `apps/` / `packages/` source files into
+the running container for hot reload.
 
 ### Stopping
 
 ```bash
-docker compose down
+docker compose down       # stop the portal container
+npm run supabase:stop     # stop the Supabase stack
 ```
 
-## Backups
+## Database migrations
 
-Every time the container starts, `npm run migrate` runs before the app. If `apps/backend/data/db.sqlite` exists, it is automatically copied to `apps/backend/data/backups/db.sqlite.<timestamp>.backup` before any migrations are applied.
-
-Backups are append-only — the directory is protected with the Linux append-only attribute so files can be added but never deleted:
+Migrations live in `supabase/migrations/` as plain SQL.
 
 ```bash
-sudo chattr +a apps/backend/data/backups/
+supabase migration new <name>   # creates supabase/migrations/<timestamp>_<name>.sql
+# edit the file, then:
+npm run supabase:reset           # apply locally (destroys local data)
 ```
 
-Run this once after cloning. Claude Code's `settings.json` also has deny rules preventing deletion of `.sqlite` and `.backup` files as an extra layer of enforcement.
-
-To list backups:
-
-```bash
-ls -lh apps/backend/data/backups/
-```
-
-To restore a backup, stop the container and copy the desired file back:
-
-```bash
-docker compose down
-cp apps/backend/data/backups/db.sqlite.<timestamp>.backup apps/backend/data/db.sqlite
-docker compose up
-```
+The Supabase CLI handles its own data volumes; you don't need to manage a SQLite file or run any backup
+script. Snapshots of the local DB can be taken with `supabase db dump`.
 
 ## Auto-Start on Boot
 
