@@ -2,6 +2,13 @@
 
 A locally hosted web app monorepo edited by Claude Code and served to a phone over Tailscale VPN.
 
+Create any apps for any phone using Claude Code, Ionic, SQLlite. Escape subscription hell and own your data!
+
+You can even vibe code this app live from your phone using claude code remote control, and since all your data is in 
+sqllite, the AI can also access all the data in all your apps making all your apps automatically AI enabled.
+
+Since it's locally hosted, feel free to set up local models for internal genui and ai applications. Control your data.
+
 ## Project Structure
 
 ```
