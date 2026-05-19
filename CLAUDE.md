@@ -6,13 +6,18 @@
 - Branch naming: `feat/<topic>`, `fix/<topic>`, `chore/<topic>`.
 - After a PR is merged, delete the remote branch: `git push origin --delete <branch>`.
 
-## Database Safety
+## Database (Supabase, locally hosted)
 
-- **Never delete** `.sqlite` or `.backup` files — this is also enforced via `settings.json` deny rules.
-- `openDatabase()` automatically backs up the DB before applying any pending migrations.
-- To add a new migration: `npm run migrate:make --workspace=apps/backend -- <name>` then fill in the generated `.cjs` file.
-- To run pending migrations manually: `npm run migrate --workspace=apps/backend`.
+- The backend is a locally hosted Supabase stack started via the Supabase CLI (`supabase start`). The portal talks to PostgREST directly at `http://127.0.0.1:54321` using `@supabase/supabase-js`.
+- Migrations live in `supabase/migrations/*.sql`. They run automatically when you `supabase start` against an empty stack, and when you `supabase db reset`.
+- To add a new migration: `supabase migration new <name>` then fill in the generated `.sql` file.
+- To re-apply migrations from scratch (destroys local DB data): `npm run supabase:reset` (alias for `supabase db reset`).
+- **Legacy SQLite artifacts** in `apps/backend/data/` (DB file + `.backup`s) may still be present from before the Supabase POC. The deny rules in `settings.json` still forbid deleting `.sqlite` and `.backup` files — leave them alone.
 
 ## Local Node Version
 
 This project requires Node 24. Run `nvm use` in the repo root (`.nvmrc` pins the version).
+
+## Supabase CLI
+
+The Supabase CLI is a devDependency (`supabase` in `package.json`); `npm install` provides it. Invoke via the `supabase:*` npm scripts (`npm run supabase:start`, `npm run supabase:stop`, `npm run supabase:status`, `npm run supabase:reset`) or `npx supabase <cmd>` directly. The CLI manages its own Docker containers for Postgres / PostgREST / GoTrue / Studio — separate from this repo's `docker-compose.yml`.

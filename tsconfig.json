@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "compilerOptions": {
     "outDir": "./out-tsc/app",
@@ -12,8 +12,9 @@
     "target": "ES2022",
     "module": "ES2022",
     "lib": ["ES2022", "dom", "dom.iterable"],
+    "types": ["vitest/globals"],
     "paths": {
-      "@personal-ai-os/shared": ["../../packages/shared/src/index.ts"]
+      "@personal-ai-os/shared": ["./packages/shared/src/index.ts"]
     }
   },
   "angularCompilerOptions": {

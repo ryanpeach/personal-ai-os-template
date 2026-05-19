@@ -1,5 +1,4 @@
 {
   "*.{ts,html,css,json,md,cjs,yml,yaml}": "prettier --write",
-  "apps/backend/src/**/*.ts": "eslint --fix",
-  "apps/portal/src/**/*.ts": "eslint --fix"
+  "src/**/*.ts": "eslint --fix"
 }
