@@ -20,4 +20,4 @@ This project requires Node 24. Run `nvm use` in the repo root (`.nvmrc` pins the
 
 ## Supabase CLI
 
-Install once per machine: `brew install supabase/tap/supabase` (or see <https://supabase.com/docs/guides/cli/getting-started>). The CLI manages its own Docker containers for Postgres / PostgREST / GoTrue / Studio — separate from this repo's `docker-compose.yml`.
+The Supabase CLI is a devDependency (`supabase` in `package.json`); `npm install` provides it. Invoke via the `supabase:*` npm scripts (`npm run supabase:start`, `npm run supabase:stop`, `npm run supabase:status`, `npm run supabase:reset`) or `npx supabase <cmd>` directly. The CLI manages its own Docker containers for Postgres / PostgREST / GoTrue / Studio — separate from this repo's `docker-compose.yml`.
