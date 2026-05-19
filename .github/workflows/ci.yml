@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: Install dependencies
@@ -27,16 +27,13 @@ jobs:
         run: npx prettier --check .
 
       - name: Lint
-        run: npm run lint --workspaces --if-present
+        run: npm run lint
 
       - name: Typecheck
-        run: npm run typecheck --workspaces --if-present
+        run: npm run typecheck
 
-      - name: Build shared
-        run: npm run build --workspace=packages/shared
+      - name: Build
+        run: npm run build
 
-      - name: Build portal
-        run: npm run build --workspace=apps/portal
-
-      - name: Test portal
-        run: npm test --workspace=apps/portal
+      - name: Test
+        run: npm test
