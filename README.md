@@ -6,7 +6,7 @@ Escape subscription hell, own your data, and — because all your data lives in 
 
 ## Stack
 
-- **Frontend:** [Angular 21](https://angular.dev) + [Ionic](https://ionicframework.com) (iOS-style PWA components) + [Tailwind CSS](https://tailwindcss.com) (utility styling).
+- **Frontend:** [Next.js 15](https://nextjs.org) (App Router) + [Ionic React](https://ionicframework.com) (iOS-style PWA components) + [Tailwind CSS](https://tailwindcss.com) (utility styling).
 - **Backend:** Locally hosted [Supabase](https://supabase.com) stack (Postgres 17 + PostgREST + GoTrue + Storage + Studio) managed via the Supabase CLI.
 - **Transport:** [Tailscale](https://tailscale.com) provides a private encrypted overlay network and TLS termination so the iPhone can reach the portal over HTTPS without any of it being exposed to the public internet.
 
@@ -15,13 +15,17 @@ Escape subscription hell, own your data, and — because all your data lives in 
 ## Project structure
 
 ```
-├── src/                     # Angular + Ionic frontend source
-│   ├── app/
-│   │   ├── apps/            # Individual apps in the portal (todo, ...)
-│   │   ├── home/            # Portal home screen (grid of app icons)
-│   │   └── supabase.client.ts
-│   ├── styles.css           # @tailwind directives
-│   └── ...
+├── app/                     # Next.js App Router (frontend source)
+│   ├── apps/                # Individual apps in the portal (todo, ...)
+│   ├── home/                # Portal home screen (grid of app icons)
+│   ├── ionic-shell.tsx      # Client wrapper: setupIonicReact + <IonApp> + CSS
+│   ├── layout.tsx           # Root layout + PWA metadata
+│   ├── page.tsx             # Redirects / → /home
+│   └── globals.css          # @tailwind directives
+├── lib/                     # Framework-agnostic logic + React hooks
+│   ├── supabase-client.ts   # Browser Supabase client (same-origin proxy)
+│   ├── todos.ts             # Pure CRUD functions (unit-tested)
+│   └── use-todos.ts         # React hook wrapping todo state
 ├── public/                  # PWA manifest + icons
 ├── packages/shared/         # Shared TypeScript types (Todo, etc.)
 ├── supabase/
@@ -34,7 +38,7 @@ Escape subscription hell, own your data, and — because all your data lives in 
 │   └── generate-pwa-icons.sh
 ├── data/backups/            # Timestamped DB dumps (append-only)
 ├── tailwind.config.js       # Tailwind content paths + theme
-├── angular.json
+├── next.config.ts           # Next config + /supabase rewrite proxy
 └── package.json
 ```
 
@@ -62,12 +66,11 @@ The portal talks to PostgREST at `http://127.0.0.1:54321` using `@supabase/supab
 
 ## Tailwind
 
-Tailwind is configured at the repo root and consumed via Angular's built-in CSS pipeline.
+Tailwind is configured at the repo root and consumed via Next's PostCSS pipeline.
 
-- `tailwind.config.js` — content paths (`./src/**/*.{html,ts}`) and theme extensions.
-- `src/styles.css` — `@tailwind base; @tailwind components; @tailwind utilities;` directives.
-
-No PostCSS config is needed — Angular 21's `@angular/build` detects Tailwind automatically.
+- `tailwind.config.js` — content paths (`./app/**/*.{ts,tsx}`, `./lib/**/*.{ts,tsx}`) and theme extensions.
+- `postcss.config.js` — wires Tailwind + Autoprefixer into the build.
+- `app/globals.css` — `@tailwind base; @tailwind components; @tailwind utilities;` directives, imported from the Ionic shell.
 
 ## Development server
 
@@ -75,7 +78,7 @@ No PostCSS config is needed — Angular 21's `@angular/build` detects Tailwind a
 npm run dev
 ```
 
-Wire-up: `predev` boots Supabase and snapshots the DB, then `ng serve` starts on `http://localhost:4200/`. The app hot-reloads on source changes. Supabase keeps running after `ng serve` exits — stop it explicitly with `npm run supabase:stop`.
+Wire-up: `predev` boots Supabase and snapshots the DB, then `next dev` starts on `http://localhost:4230/` (bound to `0.0.0.0` so Tailscale can reach it). The app hot-reloads on source changes. Supabase keeps running after the dev server exits — stop it explicitly with `npm run supabase:stop`.
 
 ## Serving to your iPhone (Tailscale + HTTPS)
 
@@ -193,19 +196,19 @@ To start on boot without being logged in, enable lingering:
 sudo loginctl enable-linger $USER
 ```
 
-## Other Angular commands
+## Other commands
 
 ```bash
-ng generate component <name>   # scaffold a new component
-npm run build                  # production build → dist/
+npm run build                  # production build → .next/
+npm start                      # serve the production build on :4230
 npm test                       # vitest unit tests
 npm run typecheck              # tsc --noEmit
-npm run lint                   # eslint
+npm run lint                   # next lint
 ```
 
 ## Additional resources
 
-- [Angular CLI reference](https://angular.dev/tools/cli)
-- [Ionic Framework docs](https://ionicframework.com/docs)
+- [Next.js docs](https://nextjs.org/docs)
+- [Ionic React docs](https://ionicframework.com/docs/react)
 - [Supabase CLI docs](https://supabase.com/docs/guides/cli)
 - [Tailwind CSS docs](https://tailwindcss.com/docs)

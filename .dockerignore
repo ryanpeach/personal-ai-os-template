@@ -1,6 +1,5 @@
 node_modules
-dist
-.angular
+.next
 apps/backend/data
 .git
 .env

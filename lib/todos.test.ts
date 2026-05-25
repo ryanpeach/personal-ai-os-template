@@ -1,8 +1,7 @@
-import { TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach } from 'vitest';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Todo } from '@personal-ai-os/shared';
-import { TodoService } from './todo.service';
-import { SUPABASE_CLIENT } from '../../supabase.client';
+import { createTodo, deleteTodo, fetchTodos, updateTodo } from './todos';
 
 interface TodoRow {
   id: number;
@@ -26,7 +25,7 @@ interface Call {
   filters: Array<{ col: string; val: unknown }>;
 }
 
-// Minimal chainable stub matching the surface of supabase.from(...) used by TodoService.
+// Minimal chainable stub matching the surface of supabase.from(...) used by lib/todos.
 // Every chain terminator (.order, .single, .then) resolves to the same `nextResponse`.
 function createSupabaseStub(): {
   client: SupabaseClient;
@@ -85,39 +84,33 @@ function createSupabaseStub(): {
   return { client, calls, respondWith };
 }
 
-describe('TodoService', () => {
-  let service: TodoService;
+describe('lib/todos', () => {
   let stub: ReturnType<typeof createSupabaseStub>;
 
   beforeEach(() => {
     stub = createSupabaseStub();
-    TestBed.configureTestingModule({
-      providers: [{ provide: SUPABASE_CLIENT, useValue: stub.client }],
-    });
-    service = TestBed.inject(TodoService);
   });
 
-  it('loadAll selects from todos and populates the signal', async () => {
+  it('fetchTodos selects from todos and maps rows', async () => {
     stub.respondWith({ data: [MOCK_ROW], error: null });
-    await service.loadAll();
+    const todos = await fetchTodos(stub.client);
     expect(stub.calls).toEqual([{ table: 'todos', op: 'select', filters: [] }]);
-    expect(service.todos()).toEqual([MOCK_TODO]);
+    expect(todos).toEqual([MOCK_TODO]);
   });
 
-  it('create inserts a todo and appends to the signal', async () => {
+  it('createTodo inserts a todo and returns the mapped row', async () => {
     stub.respondWith({ data: MOCK_ROW, error: null });
-    await service.create('Buy milk');
+    const created = await createTodo(stub.client, 'Buy milk');
     expect(stub.calls).toEqual([
       { table: 'todos', op: 'insert', payload: { title: 'Buy milk' }, filters: [] },
     ]);
-    expect(service.todos()).toContainEqual(MOCK_TODO);
+    expect(created).toEqual(MOCK_TODO);
   });
 
-  it('update patches the todo by id and replaces it in the signal', async () => {
-    service.todos.set([MOCK_TODO]);
+  it('updateTodo patches the todo by id and returns the mapped row', async () => {
     const updatedRow: TodoRow = { ...MOCK_ROW, done: true };
     stub.respondWith({ data: updatedRow, error: null });
-    await service.update(1, { done: true });
+    const updated = await updateTodo(stub.client, 1, { done: true });
     expect(stub.calls).toEqual([
       {
         table: 'todos',
@@ -126,16 +119,14 @@ describe('TodoService', () => {
         filters: [{ col: 'id', val: 1 }],
       },
     ]);
-    expect(service.todos()[0]?.done).toBe(true);
+    expect(updated?.done).toBe(true);
   });
 
-  it('remove deletes the todo by id and removes it from the signal', async () => {
-    service.todos.set([MOCK_TODO]);
+  it('deleteTodo deletes the todo by id', async () => {
     stub.respondWith({ data: null, error: null });
-    await service.remove(1);
+    await deleteTodo(stub.client, 1);
     expect(stub.calls).toEqual([
       { table: 'todos', op: 'delete', filters: [{ col: 'id', val: 1 }] },
     ]);
-    expect(service.todos()).toEqual([]);
   });
 });

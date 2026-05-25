@@ -1,11 +1,11 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 data/backups
-.angular/
+.next/
+next-env.d.ts
 *.tsbuildinfo
 .env
 .env.local
 .claude/settings.local.json
-.ng-hosts
 
 # Compiled output
 /dist
@@ -37,7 +37,6 @@ yarn-error.log
 .history/*
 
 # Miscellaneous
-/.angular/cache
 .sass-cache/
 /connect.lock
 /coverage
